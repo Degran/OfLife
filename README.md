@@ -12,3 +12,9 @@ Once everything is initialized, add new entries by putting text files or images 
 Text files should be named "yyyy-mm-dd.txt" and images "yyyy-mm-dd_img.*" with * being an image file extension.
 
 See the "Example" directory for a working example.
+
+Notes
+------
+You can use this in combination with an IFTTT script (or similar service) to remind you to write,
+and maybe even correctly format the text and images.
+I also place the files in dropbox as an online backup, after encrypting them with EncFS.

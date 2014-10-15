@@ -1,0 +1,94 @@
+package refreshOflife;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.nio.charset.Charset;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.regex.Pattern;
+
+public class FileConverter {
+
+	public static void refreshHtml(String resourceDir, String htmlPath) throws IOException{
+		Journal journal = readResource(resourceDir);
+		
+		File html = new File(htmlPath);
+		html.delete();
+		html.createNewFile();
+		
+		try(PrintWriter out = new PrintWriter(htmlPath)){
+			out.print(journal.toHtml());
+		} catch (FileNotFoundException e) {
+			// Should have been created earlier
+			e.printStackTrace();
+		}
+	}
+
+	public static Journal readResource(String resourceDir) throws IOException {
+		Journal result = new Journal();
+		
+		File folder = new File(resourceDir);
+		if(!folder.isDirectory()){throw new FileNotFoundException();}
+		
+		File[] contents = folder.listFiles();
+		
+		Pattern textPat = Pattern.compile(
+				"\\A\\d\\d\\d\\d-\\d\\d-\\d\\d\\056txt\\Z");
+		Pattern imgPat = Pattern.compile(
+				"\\A\\d\\d\\d\\d-\\d\\d-\\d\\d\\_img056.*");
+		
+		for(int i = 0; i < contents.length; i++){
+			String fileName = contents[i].getName();
+			if(textPat.matcher(fileName).matches()){
+				Entry entry = result.getEntry(dateFromName(fileName));
+				String text = readFile(contents[i].getAbsolutePath(),"UTF-8");
+				entry.setText(text);
+			}else if(imgPat.matcher(fileName).matches()){
+				Entry entry = result.getEntry(dateFromName(fileName));
+				entry.setImage(fileName);
+			}
+		}//for(i, files in the folder)
+		
+		return result;
+	}
+	
+	protected static Date dateFromName(String filename){
+		int year = Integer.parseInt(filename.substring(0, 4));
+		int month = -1 + Integer.parseInt(filename.substring(5, 7));
+		int date = Integer.parseInt(filename.substring(8, 10));
+		
+		Calendar cal = Calendar.getInstance();
+		cal.set(year, month, date);
+		
+		return cal.getTime();
+	}
+	
+	public static String readFile(String file, String csName)
+            throws IOException {
+		Charset cs = Charset.forName(csName);
+		return readFile(file, cs);
+	}
+
+	public static String readFile(String file, Charset cs)
+            throws IOException {
+		// No real need to close the BufferedReader/InputStreamReader
+		// as they're only wrapping the stream
+		try (FileInputStream stream = new FileInputStream(file)){
+			Reader reader = new BufferedReader(new InputStreamReader(stream, cs));
+			StringBuilder builder = new StringBuilder();
+			char[] buffer = new char[8192];
+			int read;
+			while ((read = reader.read(buffer, 0, buffer.length)) > 0) {
+				builder.append(buffer, 0, read);
+			}
+			return builder.toString();
+		}
+	}
+
+}

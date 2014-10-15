@@ -1,0 +1,16 @@
+package refreshOflife;
+
+import java.util.Date;
+
+public class Entry {
+
+	protected Date date;
+	protected String text;
+	protected String img;
+	
+	public void setImage(String fileName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

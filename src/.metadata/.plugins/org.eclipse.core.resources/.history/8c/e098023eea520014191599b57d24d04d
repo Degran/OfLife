@@ -1,0 +1,9 @@
+package refreshOflife;
+
+public class FileConverter {
+
+	public static void refreshHtml(String resourceDir, String htmlPath) {
+		// TODO Auto-generated method stub
+	}
+
+}

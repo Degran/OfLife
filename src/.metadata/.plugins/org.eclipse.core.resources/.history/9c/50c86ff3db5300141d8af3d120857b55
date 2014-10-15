@@ -1,0 +1,105 @@
+package ohToOf;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+public class Window extends JFrame{
+
+	private static final long serialVersionUID = 1L;
+	protected static final int FRAME_WIDTH 	= 300;
+	protected static final int FRAME_HEIGHT = 100;
+	protected static final int FRAME_X 		= 500;
+	protected static final int FRAME_Y	 	= 200;
+	
+	protected final JTextField dir = new JTextField();
+	protected final JButton browseBtn = new JButton("Browse");
+	protected final JButton convertBtn = new JButton("Convert");
+	
+	public Window(){
+		this.setTitle("OhToOf Converter");
+		final Container cont = this.getContentPane();
+		final GroupLayout layout = new GroupLayout(cont);
+		cont.setLayout(layout);
+		
+		layout.setAutoCreateGaps(true);
+		layout.setAutoCreateContainerGaps(true);
+		
+		this.setBounds(FRAME_X,FRAME_Y,FRAME_WIDTH,FRAME_HEIGHT);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setResizable(true);
+		
+		JLabel text = new JLabel("Export dicrectory:");
+		
+		// The Group layout
+		layout.setHorizontalGroup(layout.createParallelGroup()
+				.addGroup(GroupLayout.Alignment.LEADING, 
+				layout.createSequentialGroup().addComponent(text)
+									.addComponent(dir))
+				.addGroup(GroupLayout.Alignment.CENTER,
+				layout.createSequentialGroup().addComponent(browseBtn)
+									.addComponent(convertBtn)));
+		
+		layout.setVerticalGroup(layout.createSequentialGroup()
+				.addGroup(layout.createParallelGroup().addComponent(text)
+									.addComponent(dir))
+				.addGroup(layout.createParallelGroup().addComponent(browseBtn)
+									.addComponent(convertBtn)));
+		
+		// Listeners
+		browseBtn.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser 	chooser = new JFileChooser(System.getProperty("user.dir"));
+				
+				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				chooser.showOpenDialog(null);
+				
+				try{
+					dir.setText(chooser.getSelectedFile().getAbsolutePath());
+				}catch(NullPointerException exc){}
+			}
+		});
+		
+		convertBtn.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent ev) {
+				Object[] options = {"Convert",
+                "Cancel"};
+				int confirm = JOptionPane.showOptionDialog(Window.this,
+						"This process will rename the exported images and move them to the \"OfLife_files\" folder in the same directory as this tool.",
+						"Rename warning",
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.WARNING_MESSAGE,
+						null,     //do not use a custom Icon
+						options,  //the titles of buttons
+						options[0]); //default button title
+				
+				if(confirm == 0){
+					// Catch IO exception thrown by the converter
+					try{
+						Converter.OhToOf(dir.getText());
+					}catch(FileNotFoundException exc){
+						JOptionPane.showMessageDialog(Window.this,
+							    "The given folder was not found",
+							    "Folder not found",
+							    JOptionPane.ERROR_MESSAGE);
+					}catch(IOException exc){
+						JOptionPane.showMessageDialog(Window.this,
+							    "There was a problem converting the exported text file",
+							    "Folder not found",
+							    JOptionPane.ERROR_MESSAGE);
+					}
+					
+					JOptionPane.showMessageDialog(Window.this,
+						    "The files in the export folder were converted.",
+						    "Conversion completed",
+						    JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		});
+	}
+
+}

@@ -1,0 +1,56 @@
+package refreshOflife;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
+import java.util.regex.Pattern;
+
+public class FileConverter {
+
+	public static void refreshHtml(String resourceDir, String htmlPath) throws IOException{
+		Journal journal = readResource(resourceDir);
+		
+		File html = new File(htmlPath);
+		html.delete();
+		html.createNewFile();
+		
+		try(PrintWriter out = new PrintWriter(htmlPath)){
+			out.print(journal.toHtml());
+		} catch (FileNotFoundException e) {
+			// Should have been created earlier
+			e.printStackTrace();
+		}
+	}
+
+	public static Journal readResource(String resourceDir) throws FileNotFoundException {
+		Journal result = new Journal();
+		
+		File folder = new File(resourceDir);
+		if(!folder.isDirectory()){throw new FileNotFoundException();}
+		
+		File[] contents = folder.listFiles();
+		
+		Pattern textPat = Pattern.compile(
+				"\\A\\d\\d\\d\\d-\\d\\d-\\d\\d\\056txt\\Z");
+		Pattern imgPat = Pattern.compile(
+				"\\A\\d\\d\\d\\d-\\d\\d-\\d\\d\\_img056.*");
+		
+		for(int i = 0; i < contents.length; i++){
+			String fileName = contents[i].getName();
+			if(textPat.matcher(fileName).matches()){
+				
+			}else if(imgPat.matcher(fileName).matches()){
+				
+			}
+		}//for(i, files in the folder)
+		
+		return result;
+	}
+	
+	protected Date dateFromName(String filename){
+		
+	}
+
+}

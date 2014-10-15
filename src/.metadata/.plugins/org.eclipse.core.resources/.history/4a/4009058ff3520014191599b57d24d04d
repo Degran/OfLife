@@ -1,0 +1,25 @@
+package refreshOflife;
+
+import java.util.Date;
+
+public class Entry {
+
+	protected final Date date;
+	protected String text;
+	protected String img;
+	
+	public Entry(Date date){
+		this.date = date;
+	}
+	
+	public void setImage(String fileName) {
+		img = fileName;
+	}
+	
+	public String getImage(){
+		return img;
+	}
+	
+	public void 
+
+}

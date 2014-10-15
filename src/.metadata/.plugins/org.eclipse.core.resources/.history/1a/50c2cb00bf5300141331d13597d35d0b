@@ -1,0 +1,168 @@
+package refreshOflife;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+public class Journal {
+	
+	protected SortedSet<Entry> entries;
+	
+	public Journal(){
+		entries = new TreeSet<Entry>();
+	}
+	
+	/**
+	 * This method is not just a read!
+	 * If there is no entry for the requested date,
+	 * an empty one will be added and returned.
+	 */
+	public Entry getEntry(Date date) {
+		Entry entry = new Entry(date);
+		
+		// If the set already contains an entry of that date
+		if(entries.contains(entry)){
+			return entries.tailSet(entry).first();
+		}else{
+			entries.add(entry);
+			return entry;
+		}
+	}
+	
+	public String toHtml() {
+		String result = htmlHead + htmlBodyHeader;
+		
+		result = result + generateMenu();
+		
+		System.out.println(result);
+		return "";
+	}
+	
+	/**
+	 * Inserts the number of entries into the JavaScript randomize function
+	 * and calls the generateMonthMenu() method to add the correct tags
+	 * to the month buttons
+	 */
+	private String generateMenu(){
+		String result = menuRandomStart;
+		result = result + Integer.toString(entries.size());
+		result = result + menuRandomEnd;
+		
+		result = result + generateMonthMenu();
+		result = result + generateContent();
+		
+		return result;
+	}
+	
+	private String generateMonthMenu(){
+		StringBuilder builder = new StringBuilder(128);
+		Iterator<Entry> it = entries.iterator();
+		Calendar cal = Calendar.getInstance();
+		
+		int entryNum = 0;
+		int month;
+		String monthStr;
+		int year;
+		int lastMonth = -1;
+		int lastYear = -1;
+		while(it.hasNext()){
+			entryNum++;
+			cal.setTime(it.next().getDate());
+			month = cal.get(cal.MONTH);
+			year = cal.get(cal.YEAR);
+			
+			// If this entry was made in another month
+			if(lastMonth < month || lastYear < year){
+				monthStr = cal.getDisplayName(cal.MONTH, cal.SHORT, Locale.US);
+				builder.insert(0, monthButtonStart + Integer.toString(entryNum)
+						+ "\">" + monthStr + " " + Integer.toString(year) + "</a></div>\n");
+				
+				lastMonth = month;
+				lastYear = year;
+			}
+		}
+		
+		return builder.toString();
+	}
+	
+	private String generateContent(){
+		Iterator<Entry> it = entries.iterator();
+		
+		int entryNum = 1;
+		Entry entry = it.next();
+		StringBuilder builder = new StringBuilder(
+				entryTab + Integer.toString(entryNum) + "</div>\n" + entry.toHtml());
+		
+		while(it.hasNext()){
+			// Specify the class of the previous entry (and its tag) here
+			builder.insert(0, newEntry + Integer.toString(entryNum));
+			
+			entryNum++;
+			entry = it.next();
+			builder.insert(0,
+					entryTab + Integer.toString(entryNum) + "</div>\n" + entry.toHtml());
+		}
+		// Needs this setup because the top entry is of a different class
+		builder.insert(0, contentStart + Integer.toString(entryNum));
+		
+		return builder.toString();
+	}
+	
+	private static final String htmlHead = 
+			"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
+			+"<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n\n"
+
+				+"\t<link href=\"./OfLife_files/app_107.css\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\">\n\n"	
+		
+				+"\t<title>OfLife | An offline OhLife</title>\n\n"
+		
+			+"<style type=\"text/css\"></style></head>\n\n";
+	
+	private static final String htmlBodyHeader =
+			"<body class=\"entries\">\n"
+				+"\t<div class=\"header\">\n"
+					+"\t\t<div class=\"centerwrap\">\n"
+						+"\t\t\t<div class=\"logo\"><img src=\"./OfLife_files/txt_logo.gif\" alt=\"OfLife\"></div>\n"
+					+"\t\t</div>\n"
+				+"\t</div>\n\n";
+	
+	private static final String menuRandomStart =
+				"\t<div class=\"sidebar\"><div class=\"sbentries\">\n"
+				+"\t<div class=\"menu\">\n"
+					+"\t\t<div class=\"item on\">\n"
+						+"\t\t\t<!-- code for the random button -->\n"
+						+"\t\t\t<a onclick=\"randomEntry();\">Random</a></div>\n"
+						+"\t\t\t<script language=\"JavaScript\">\n"
+							+"\t\t\t\tfunction randomEntry() {\n"
+								+"\t\t\t\t\tNbOfEntries = ";
+	private static final String menuRandomEnd =
+								";\n"
+								+"\t\t\t\t\trandom_num = (Math.round((Math.random()*(NbOfEntries-1))+1));\n"
+								+"\t\t\t\t\twindow.location.href = \"#Entry\" + random_num;\n"
+							+"\t\t\t\t}\n"
+						+"\t\t\t</script>\n";
+	
+	private static final String monthButtonStart = "\t\t<div class=\"item\"><a href=\"#Entry";
+
+	private static final String contentStart =
+				"\t</div></div></div>\n\n"
+	
+				+"\t<div class=\"contentwrap\"><div class=\"content\">\n"
+				+"\t<div class=\"entrylist\">\n"
+					+"\t\t<div class=\"entry first hl\">\n"
+						+"\t\t\t<a name=\"Entry";
+	
+	private static final String newEntry =
+					"\t\t<div class=\"entry\">\n"
+						+"\t\t\t<a name=\"Entry";
+	private static final String entryTab =
+						"\"></a>\n"
+						+"\t\t\t<div class=\"tab\">";
+	
+	private static final String htmlEnd =
+				"\t</div></div></div>\n\n";
+	
+}

@@ -1,0 +1,25 @@
+package refreshOflife;
+
+import java.io.IOException;
+import java.util.Date;
+
+public class RefreshOfLife {
+
+	/**
+	 * @param args
+	 * @throws IOException 
+	 */
+	public static void main(String[] args) throws IOException {
+		String wd 			= System.getProperty("user.dir");
+		String resourceDir 	= wd + "/OfLife_files";
+		String htmlPath		= wd + "/OfLife.html";
+		
+		Journal jour = new Journal();
+		System.out.println(jour.getEntry(new Date()).isEmpty());
+		
+//		FileConverter.refreshHtml(resourceDir, htmlPath);
+		
+		//Runtime.getRuntime().exec(htmlPath);
+	}
+
+}

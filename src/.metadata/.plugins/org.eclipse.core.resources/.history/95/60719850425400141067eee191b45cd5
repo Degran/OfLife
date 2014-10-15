@@ -1,0 +1,30 @@
+package refreshOflife;
+
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+
+public class RefreshOfLife {
+
+	/**
+	 * @param args
+	 * @throws IOException 
+	 */
+	public static void main(String[] args) throws IOException {
+		/*String wd 			= System.getProperty("user.dir");
+		String resourceDir 	= wd + "/OfLife_files";
+		String htmlPath		= wd + "/OfLife.html";*/
+		
+		URL url = RefreshOfLife.class.getProtectionDomain().getCodeSource().getLocation();
+		File execPath = new File(url.toURI());
+		
+		FileConverter.refreshHtml(resourceDir, htmlPath);
+		
+		if(Desktop.isDesktopSupported()){
+			File htmlFile = new File(htmlPath);
+			Desktop.getDesktop().browse(htmlFile.toURI());
+		}
+		
+	}
+
+}

@@ -1,0 +1,14 @@
+package refreshOflife;
+
+public class FileConverter {
+
+	public static void refreshHtml(String resourceDir, String htmlPath) {
+		Journal journal = readResource(resourceDir);
+	}
+
+	protected static Journal readResource(String resourceDir) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

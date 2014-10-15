@@ -1,0 +1,47 @@
+package refreshOflife;
+
+import java.util.Date;
+
+public class Entry implements Comparable<Entry>{
+
+	protected final Date date;
+	protected String text;
+	protected String img;
+	
+	public Entry(Date date){
+		this.date = date;
+	}
+	
+	public Date getDate(){
+		return date;
+	}
+	
+	public void setImage(String fileName) {
+		img = fileName;
+	}
+	
+	public String getImage(){
+		return img;
+	}
+	
+	public void setText(String text){
+		this.text = text;
+	}
+	
+	public String getText(){
+		return text;
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public int compareTo(Entry arg0) {
+		return date.compareTo(arg0.getDate());
+	}
+	
+	public boolean isEmpty(){
+		return text == null && img == null;
+	}
+
+}

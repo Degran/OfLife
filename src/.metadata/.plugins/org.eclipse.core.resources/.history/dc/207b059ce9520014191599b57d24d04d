@@ -1,0 +1,19 @@
+package refreshOflife;
+
+import java.io.IOException;
+
+public class RefreshOfLife {
+
+	/**
+	 * @param args
+	 * @throws IOException 
+	 */
+	public static void main(String[] args) throws IOException {
+		String wd = System.getProperty("user.dir");
+		
+		FileConverter.refreshHtml(wd+"/"+"OfLife_files");
+		
+		Runtime.getRuntime().exec(wd+"/"+"InvenThéa.exe");
+	}
+
+}

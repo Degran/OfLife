@@ -48,7 +48,7 @@ public class Journal {
 	
 	/**
 	 * Inserts the number of entries into the JavaScript randomize function
-	 * and calls the generateMonthMenu() method to add the correct tags
+	 * and calls the appendMonthMenu() method to add the correct tags
 	 * to the month buttons
 	 */
 	private StringBuilder appendMenu(StringBuilder builder){
